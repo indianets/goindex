@@ -30,64 +30,53 @@ th{font-weight:700}
 .icon-rar{background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAASCAQAAAAul0yEAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAGAAAABgAPBrQs8AAAAHdElNRQfkBQkKBzZ5hbVGAAABZ0lEQVQoz12SPSjEcRjHP7+Xu59z56XzEhIuk8F2isFmMxhMUnal1NmUiUzYThl0ZVBmVjNZxEAhfyVFuPP2P/R/+RmOc3ye8dvz7en7fTBbosDj74iPqmxfpJ1uAIS6EDP+NZISITNiNDZdXOuhikPgiGYqWcbK+5phWAXgmNYfpQtQC1isOkmk4oCuXHSIEt14L4axYMTtxPkn5/AQZ+EiipS1/DcvI+mhnh9zDfhEaMTlFUlt+HIaIEigAZtSTisa39y61SSx+t6YYh2IFw2EV71BDunL26zfb9OBeNoOkwxar/igAevVU2DOjnwO2QYytHljWLJc+tnS5QEpZmmTB0GSODEsigkKUpbCFCKvOyKfZoMm5slg8LSr0rGVkqysk5iUHh3cMU4GD8SS2QzTGhDcsKv3ElNvHzTj8MoOeOct+8/d5UokccyfbJIYtIqLAf8aGebdy7/R5QG+3+GZ9XLnFXwBD+yC4BnhT5YAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjAtMDUtMDlUMTA6MDc6NTQrMDA6MDAsETXuAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIwLTA1LTA5VDEwOjA3OjU0KzAwOjAwXUyNUgAAAABJRU5ErkJggg==) left top no-repeat}
 </style>`);
 
-
-// .icon-image{background:url() left top no-repeat}
-// .icon-video{background:url() left top no-repeat}
-// 
-// 
-// .icon-pdf{background:url() left top no-repeat}
-// .icon-msword{background:url() left top no-repeat}
-
-// .icon-XYZ{background:url() left top no-repeat}
-
 // 初始化页面，并载入必要资源
-function init(){
-    document.siteName = $('title').html();
-    $('body').addClass("mdui-theme-primary-blue-grey mdui-theme-accent-blue");
-    var html = `
-    <h1 id="heading">Index of <?php echo urldecode($path);?></h1>
+function init() {
+	document.siteName = $('title').html();
+	$('body').addClass("mdui-theme-primary-blue-grey mdui-theme-accent-blue");
+	var html = `
+    <h1 id="heading"></h1>
     <table id="table">
     </table>
 	`;
-    $('body').html(html);
+	$('body').html(html);
 }
 
-function render(path){
-	if(path.indexOf("?") > 0){
-		path = path.substr(0,path.indexOf("?"));
+function render(path) {
+	if (path.indexOf("?") > 0) {
+		path = path.substr(0, path.indexOf("?"));
 	}
-    title(path);
-    nav(path);
-    if(path.substr(-1) == '/'){
-    	list(path);
-    }else{
-	    file(path);
-    }
+	title(path);
+	nav(path);
+	if (path.substr(-1) == '/') {
+		list(path);
+	} else {
+		file(path);
+	}
 }
-
 
 // 渲染 title
-function title(path){
-    path = decodeURI(path);
-    $('title').html(document.siteName+' - '+path);
+function title(path) {
+	path = decodeURI(path);
+	$('title').html(document.siteName + ' - ' + path);
 }
 
 // 渲染导航栏
-function nav(path){
+function nav(path) {
 	path = decodeURI(path);
-    $('#heading').html('Index of '+path);
+	$('#heading').html('Index of ' + path);
 }
 
 // 渲染文件列表
-function list(path){
+function list(path) {
 	var content = `
 <tr><th class="file-name">Name</th><th class="file-size">Size</th><th class="file-date-modified">Date Modified</th><th class="file-type">Type</th></tr>
 	`;
 
-	if(path != '/'){
+	if (path != '/') {
 		var up = path.split('/');
-		up.pop();up.pop();
-		up = up.join('/')+'/';
+		up.pop(); up.pop();
+		up = up.join('/') + '/';
 		content += `
 <tr>
 	<td class="file-name">
@@ -96,51 +85,48 @@ function list(path){
 	<td class="file-size"></td>
 	<td class="file-date-modified"></td>
 </tr>
-		`;	
+		`;
 	}
 	$('#table').html(content);
-	
-    var password = localStorage.getItem('password'+path);
-	
-	// $('#list').html(`<div class="mdui-progress"><div class="mdui-progress-indeterminate"></div></div>`);
-	// $('#list').html(html);
-    $.post(path,'{"password":"'+password+'"}', function(data,status){
-        var obj = jQuery.parseJSON(data);
-        if(typeof obj != 'null' && obj.hasOwnProperty('error') && obj.error.code == '401'){
-            var pass = prompt("password","");
-            localStorage.setItem('password'+path, pass);
-            if(pass != null && pass != ""){
-                list(path);
-            }else{
-                history.go(-1);
-            }
-        }else if(typeof obj != 'null'){
-            list_files(path,obj.files);
-        }
-    });
+
+	var password = localStorage.getItem('password' + path);
+
+	$.post(path, '{"password":"' + password + '"}', function (data, status) {
+		var obj = jQuery.parseJSON(data);
+		if (typeof obj != 'null' && obj.hasOwnProperty('error') && obj.error.code == '401') {
+			var pass = prompt("password", "");
+			localStorage.setItem('password' + path, pass);
+			if (pass != null && pass != "") {
+				list(path);
+			} else {
+				history.go(-1);
+			}
+		} else if (typeof obj != 'null') {
+			list_files(path, obj.files);
+		}
+	});
 }
 
-function list_files(path,files){
-    html = "";
-    for(i in files){
-        var item = files[i];
-        if(item['size']==undefined){
-            item['size'] = "";
-        }
-        item['modifiedTime'] = utc2beijing(item['modifiedTime']);
-        item['size'] = formatFileSize(item['size']);
-        if(item['mimeType'] == 'application/vnd.google-apps.folder'){
-        	var p = path+item.name+'/';
-            html +=`
+function list_files(path, files) {
+	html = "";
+	for (i in files) {
+		var item = files[i];
+		if (item['size'] == undefined) {
+			item['size'] = "";
+		}
+		item['size'] = formatFileSize(item['size']);
+		if (item['mimeType'] == 'application/vnd.google-apps.folder') {
+			var p = path + item.name + '/';
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-dir folder" href="${p}">${item.name}/</a></td>
 					<td class="file-size">${item['size']}</td>
 					<td class="file-date-modified">${item['modifiedTime']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'audio/mid'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'audio/mid') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-mid" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -148,9 +134,9 @@ function list_files(path,files){
 					<td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'audio/mpeg'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'audio/mpeg') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-audio" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -158,9 +144,9 @@ function list_files(path,files){
 					<td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'image/jpeg'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'image/jpeg') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-image" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -168,9 +154,9 @@ function list_files(path,files){
                     <td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'video/mpeg'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'video/mpeg') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-video" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -178,9 +164,9 @@ function list_files(path,files){
 					<td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'application/x-7z-compressed'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'application/x-7z-compressed') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-7z" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -188,9 +174,9 @@ function list_files(path,files){
 					<td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'application/x-zip-compressed'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'application/x-zip-compressed') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-zip" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -198,9 +184,9 @@ function list_files(path,files){
 					<td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'text/plain'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'text/plain') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-text" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -208,9 +194,9 @@ function list_files(path,files){
 					<td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'text/xml'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'text/xml') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-xml" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -218,9 +204,9 @@ function list_files(path,files){
 					<td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'application/x-rar'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'application/x-rar') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-rar" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -228,9 +214,9 @@ function list_files(path,files){
 					<td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'text/html'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'text/html') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-html" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -238,9 +224,9 @@ function list_files(path,files){
 					<td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'application/pdf'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'application/pdf') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-pdf" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -249,9 +235,9 @@ function list_files(path,files){
                     <td class="file-date-modified">${item['iconLink']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'text/markdown'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'text/markdown') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-md" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -259,9 +245,9 @@ function list_files(path,files){
 					<td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'application/x-msdos-program'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'application/x-msdos-program') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-bat" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -269,9 +255,9 @@ function list_files(path,files){
 					<td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'application/x-msdownload'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'application/x-msdownload') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-x-msdownload" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -279,9 +265,9 @@ function list_files(path,files){
 					<td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'application/x-bittorrent'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'application/x-bittorrent') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-application/x-bittorrent" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -289,9 +275,9 @@ function list_files(path,files){
 					<td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        } else if(item['mimeType'] == 'application/vnd.google-apps.spreadsheet'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'application/vnd.google-apps.spreadsheet') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-google.spreadsheet" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -301,9 +287,9 @@ function list_files(path,files){
                     
 				</tr>
             `;
-        } else if(item['mimeType'] == 'application/vnd.google-apps.presentation'){
-	        var p = path+item.name;
-            html += `
+		} else if (item['mimeType'] == 'application/vnd.google-apps.presentation') {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-google.presentation" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -311,9 +297,9 @@ function list_files(path,files){
 					<td class="file-date-modified">application/google.presentation</td>
 				</tr>
             `;
-        } else{
-	        var p = path+item.name;
-            html += `
+		} else {
+			var p = path + item.name;
+			html += `
 				<tr>
 					<td class="file-name"><a class="icon icon-file" href="${p}">${item.name}</a></td>
 					<td class="file-size">${item['size']}</td>
@@ -321,71 +307,38 @@ function list_files(path,files){
                     <td class="file-date-modified">${item['mimeType']}</td>
 				</tr>
             `;
-        }
-    }
-    $('#table').append(html);
-	// $('#list').html(html);
-}
-
-
-//时间转换
-function utc2beijing(utc_datetime) {
-    // 转为正常的时间格式 年-月-日 时:分:秒
-    var T_pos = utc_datetime.indexOf('T');
-    var Z_pos = utc_datetime.indexOf('Z');
-    var year_month_day = utc_datetime.substr(0,T_pos);
-    var hour_minute_second = utc_datetime.substr(T_pos+1,Z_pos-T_pos-1);
-    var new_datetime = year_month_day+" "+hour_minute_second; // 2017-03-31 08:02:06
-
-    // 处理成为时间戳
-    timestamp = new Date(Date.parse(new_datetime));
-    timestamp = timestamp.getTime();
-    timestamp = timestamp/1000;
-
-    // 增加8个小时，北京时间比utc时间多八个时区
-    var unixtimestamp = timestamp+8*60*60;
-
-    // 时间戳转为时间
-    var unixtimestamp = new Date(unixtimestamp*1000);
-    var year = 1900 + unixtimestamp.getYear();
-    var month = "0" + (unixtimestamp.getMonth() + 1);
-    var date = "0" + unixtimestamp.getDate();
-    var hour = "0" + unixtimestamp.getHours();
-    var minute = "0" + unixtimestamp.getMinutes();
-    var second = "0" + unixtimestamp.getSeconds();
-    return year + "-" + month.substring(month.length-2, month.length)  + "-" + date.substring(date.length-2, date.length)
-        + " " + hour.substring(hour.length-2, hour.length) + ":"
-        + minute.substring(minute.length-2, minute.length) + ":"
-        + second.substring(second.length-2, second.length);
+		}
+	}
+	$('#table').append(html);
 }
 
 // bytes自适应转换到KB,MB,GB
 function formatFileSize(bytes) {
-    if (bytes>=1000000000) {bytes=(bytes/1000000000).toFixed(2)+' GB';}
-    else if (bytes>=1000000)    {bytes=(bytes/1000000).toFixed(2)+' MB';}
-    else if (bytes>=1000)       {bytes=(bytes/1000).toFixed(2)+' KB';}
-    else if (bytes>1)           {bytes=bytes+' bytes';}
-    else if (bytes==1)          {bytes=bytes+' byte';}
-    else                        {bytes='';}
-    return bytes;
+	if (bytes >= 1000000000) { bytes = (bytes / 1000000000).toFixed(2) + ' GB'; }
+	else if (bytes >= 1000000) { bytes = (bytes / 1000000).toFixed(2) + ' MB'; }
+	else if (bytes >= 1000) { bytes = (bytes / 1000).toFixed(2) + ' KB'; }
+	else if (bytes > 1) { bytes = bytes + ' bytes'; }
+	else if (bytes == 1) { bytes = bytes + ' byte'; }
+	else { bytes = ''; }
+	return bytes;
 }
 
 // 监听回退事件
-window.onpopstate = function(){
-    var path = window.location.pathname;
-    render(path);
+window.onpopstate = function () {
+	var path = window.location.pathname;
+	render(path);
 }
 
 
-$(function(){
-    init();
-    var path = window.location.pathname;
-    $("body").on("click",'.folder',function(){
-        var url = $(this).attr('href');
-        history.pushState(null, null, url);
-        render(url);
-        return false;
-    });
+$(function () {
+	init();
+	var path = window.location.pathname;
+	$("body").on("click", '.folder', function () {
+		var url = $(this).attr('href');
+		history.pushState(null, null, url);
+		render(url);
+		return false;
+	});
 
-    render(path);
+	render(path);
 });
