@@ -92,7 +92,7 @@ function list(path) {
 	var password = localStorage.getItem('password' + path);
 
 	$.post(path, '{"password":"' + password + '"}', function (data, status) {
-		var obj = jQuery.parseJSON(data);
+		var obj = JSON.parse(data);
 		if (typeof obj != 'null' && obj.hasOwnProperty('error') && obj.error.code == '401') {
 			var pass = prompt("password", "");
 			localStorage.setItem('password' + path, pass);
