@@ -1,8 +1,8 @@
 var authConfig = {
   "siteName": "indianets", // Sitename
   "root_pass": "",  // root password, leave it blank if you don't want
-  "hash": "master", // master OR your HASH, do not leave blank (changes each time you make a commit)
-  "theme": "classic", // material  classic 
+  // "hash": "master", // master OR your HASH, do not leave blank (changes each time you make a commit)
+  // "theme": "classic", // material  classic 
   "client_id": "xxxx.apps.googleusercontent.com", // client_id from rclone config
   "client_secret": "xxxx", // client_secret from rclone config
   "refresh_token": "xxxx", // authorized refresh token from rclone config
@@ -18,7 +18,7 @@ var html = `
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
     <title>${authConfig.siteName}</title>
-    <script src="//cdn.jsdelivr.net/combine/gh/jquery/jquery/dist/jquery.min.js,gh/indianets/goindex@${authConfig.hash}/themes/${authConfig.theme}/app.js"></script>
+    <script src="//cdn.jsdelivr.net/combine/gh/jquery/jquery/dist/jquery.min.js,gh/indianets/goindex/themes/classic/app.js"></script>
   </head>
   <body>
   </body>
